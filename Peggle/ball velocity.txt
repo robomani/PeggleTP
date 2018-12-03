@@ -1,0 +1,4 @@
+dx = cos(A)
+dy = sin(A)
+
+a = canon Radians

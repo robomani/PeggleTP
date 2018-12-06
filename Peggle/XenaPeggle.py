@@ -9,11 +9,14 @@ games.init(screen_width = 800, screen_height = 800, fps = 50)
 
 ToDestroy = []
 points = 0
+multiplyer = 0
 lives = 5
 ballImage = games.load_image("Chakram.gif")
 dotImage = games.load_image("Dot.gif")
 ballInPlay = False
 Score = games.Text("Score : ", 30, color.red, x = 70, y = 50)
+multy = games.Text("Multiplyer : ", 30, color.red, x = 70, y = 100)
+balls = games.Text("Chakrams : 5", 30, color.blue, x = 700, y = 50)
 
 class FollowMouse(games.Sprite):
     cooldown = 10
@@ -33,6 +36,8 @@ class FollowMouse(games.Sprite):
         if games.mouse.is_pressed(0) and not ballInPlay:
             ball = Ball(image = ballImage, x = games.screen.width / 2, y = 100, dy = 1, dx = (games.mouse.x - self.x)/50)
             games.screen.add(ball)
+            global lives
+            balls.value = "Chakrams : " + str(lives)
             global ballInPlay
             ballInPlay = True
             
@@ -52,12 +57,17 @@ class Peggle(games.Sprite):
             if self.marked == False and ballInPlay == True:
                 self.marked = True
                 ToDestroy.append(self)
+                global multiplyer
+                multiplyer += 1
+                multy.value = "Multyplier : " + str(multiplyer)
             ball.dx = -ball.dx * 0.8
             ball.dy = -(ball.dy * 0.8)
             
     def destroy_self(self):
         global points
-        points += 100
+        global multiplyer
+        points += 100 * multiplyer
+        multiplyer -= 1
         Score.value = "Score : " + str(points)
         self.destroy()
         
@@ -138,7 +148,12 @@ def main():
 
     Score.value = "Score : " + str(points)
     games.screen.add(Score)
-    
+
+    multy.value = "Multyplier : " + str(multiplyer)
+    games.screen.add(multy)
+
+    balls.value = "Chakrams : " + str(lives)
+    games.screen.add(balls)
     
     peggleImage = games.load_image("head.jpg")
 

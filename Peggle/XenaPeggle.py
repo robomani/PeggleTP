@@ -10,6 +10,8 @@ games.init(screen_width = 800, screen_height = 800, fps = 50)
 ToDestroy = []
 points = 0
 multiplyer = 0
+pegToWin = 10
+pegDestroyed = 0
 lives = 5
 ballImage = games.load_image("Chakram.gif")
 dotImage = games.load_image("Dot.gif")
@@ -60,15 +62,21 @@ class Peggle(games.Sprite):
                 global multiplyer
                 multiplyer += 1
                 multy.value = "Multyplier : " + str(multiplyer)
-            ball.dx = -ball.dx * 0.8
+            ball.dx = -ball.dx * 0.95
             ball.dy = -(ball.dy * 0.8)
             
     def destroy_self(self):
         global points
         global multiplyer
+        global pegDestroyed
+        global pegToWin
         points += 100 * multiplyer
         multiplyer -= 1
         Score.value = "Score : " + str(points)
+        pegDestroyed += 1
+        if pegDestroyed >= pegToWin:
+            won = games.Text("You Won", 30, color.blue, x = games.screen.width / 2, y = games.screen.height / 2)
+            games.screen.add(won)
         self.destroy()
         
 class Dot(games.Sprite):
@@ -103,7 +111,7 @@ class Ball(games.Sprite):
         if self.dy == 0:
             self.dy = 1.8
         if self.dx == 0:
-            self.dx = 2.5
+            self.dx = random.randrange(-2.5,2.5)
 
         """ End turn if the ball reach the bottom of the screen """
         if self.bottom > games.screen.height or self.top < 0:
@@ -125,7 +133,9 @@ class Ball(games.Sprite):
             global lives
             lives = lives - 1
         """ If there is no life left the game is dead (has ended) """
-        #if lives < 1:
+        if lives < 1:
+            Lost = games.Text("You Lost", 30, color.blue, x = games.screen.width / 2, y = games.screen.height / 2)
+            games.screen.add(Lost)
             #games.quit()
         self.destroy()
             
